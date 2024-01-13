@@ -9,7 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
 // Setup Micorosoft Learn Search Service
-builder.ConfigureMicrosoftLearnHttpClients();
+builder
+    .ConfigureMicrosoftLearnSearchService()
+    .ConfigureMicrosoftLearnHttpClients();
 
 // Setup OpenAPI (Swagger)
 builder.Services.AddEndpointsApiExplorer();
@@ -24,8 +26,13 @@ builder.Services.AddSwaggerGen(option =>
 
 var app = builder.Build();
 
+app.UseSwagger();
+
 if (app.Environment.IsDevelopment())
-    app.UseSwagger().UseSwaggerUI();
+{
+    app.UseSwaggerUI();
+    app.UseDeveloperExceptionPage();
+}
 
 var msLearn = app.MapGroup("/search");
 msLearn.MapGet("/", async(
